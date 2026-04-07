@@ -21,7 +21,7 @@ export default function Footer() {
 
         {/* Donate */}
         <a
-          href="https://cafecito.app/vibesbybel"
+          href="https://cafecito.app/thejournalvibes"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-amber-100 text-charcoal text-sm font-bold px-4 py-2 rounded-full mb-6 hover:bg-amber-200 transition-colors"
@@ -32,7 +32,7 @@ export default function Footer() {
         {/* Social */}
         <div className="flex justify-center gap-4 mb-6">
           <a
-            href="https://tiktok.com/@vibesbybel"
+            href="https://tiktok.com/@thejournalvibes"
             target="_blank"
             rel="noopener noreferrer"
             className="text-cream/50 hover:text-blush transition-colors text-sm"
@@ -41,7 +41,7 @@ export default function Footer() {
           </a>
           <span className="text-cream/30">·</span>
           <a
-            href="https://instagram.com/vibesbybel"
+            href="https://instagram.com/thejournalvibes_"
             target="_blank"
             rel="noopener noreferrer"
             className="text-cream/50 hover:text-blush transition-colors text-sm"

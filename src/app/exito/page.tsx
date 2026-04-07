@@ -122,7 +122,7 @@ function ExitoContent() {
           </a>
         )}
 
-        <Link href="/" className="btn-secondary inline-block w-full text-center">
+        <Link href="/#tienda" className="btn-secondary inline-block w-full text-center">
           Volver a la tienda
         </Link>
 
