@@ -8,7 +8,7 @@ interface PaymentResult {
   approved?: boolean;
   pending?: boolean;
   productName?: string;
-  downloadUrl?: string;
+  downloadToken?: string;
   error?: string;
 }
 
@@ -19,7 +19,6 @@ function ExitoContent() {
 
   useEffect(() => {
     const paymentId = searchParams.get("payment_id");
-    const status = searchParams.get("status");
     const productId = searchParams.get("preference_id") || searchParams.get("merchant_order_id");
 
     if (!paymentId) {
@@ -61,10 +60,7 @@ function ExitoContent() {
             Algo salió mal
           </h1>
           <p className="text-muted text-sm mb-6">{result.error}</p>
-          <a
-            href="https://instagram.com/vibesbybel"
-            className="btn-primary inline-block"
-          >
+          <a href="https://instagram.com/thejournalvibes_" className="btn-primary inline-block">
             Contáctame en Instagram
           </a>
         </div>
@@ -94,45 +90,39 @@ function ExitoContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-cream p-6">
-      <div className="paper-card text-center p-8 max-w-sm w-full">
-        {/* Washi tape decoration */}
-        <div className="washi-tape washi-pink absolute -top-3 left-1/2 -translate-x-1/2 w-24" />
+      <div className="paper-card text-center p-8 max-w-sm w-full relative">
+        <div className="washi-tape washi-pink absolute -top-2 left-1/2 -translate-x-1/2 w-24" />
 
         <span className="text-5xl mb-4 block">🎉</span>
         <h1 className="font-script text-3xl text-blush mb-2">¡Muchas gracias!</h1>
-        <p className="font-serif text-xl font-bold text-charcoal mb-4">
+        <p className="font-serif text-xl font-bold text-charcoal mb-3">
           {result?.productName || "Tu compra fue exitosa"}
         </p>
-        <p className="text-sm text-muted mb-8">
-          Ya puedes descargar tu producto. Recuerda guardar el archivo en un
-          lugar seguro. 🌸
+        <p className="text-sm text-muted mb-6">
+          Ya puedes descargar tu producto. Guardá el archivo en un lugar seguro. 🌸
         </p>
 
-        {result?.downloadUrl && (
+        {result?.downloadToken && (
           <a
-            href={result.downloadUrl}
-            download
-            className="btn-primary inline-flex items-center gap-2 mb-4 w-full justify-center"
+            href={`/api/download?token=${result.downloadToken}`}
+            className="btn-primary flex items-center justify-center gap-2 mb-4 w-full"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            Descargar ahora
+            <span>Descargar ahora</span>
           </a>
         )}
 
-        <Link href="/#tienda" className="btn-secondary inline-block w-full text-center">
+        <Link href="/#tienda" className="btn-secondary block w-full text-center">
           Volver a la tienda
         </Link>
 
         <p className="text-xs text-muted mt-6">
-          ¿Algún problema?{" "}
-          <a
-            href="https://instagram.com/vibesbybel"
-            className="text-blush underline"
-          >
-            Escríbeme en Instagram
+          ⚠️ El link de descarga expira en 24hs.{" "}
+          <a href="https://instagram.com/thejournalvibes_" className="text-blush underline">
+            ¿Problemas? Escribime en Instagram
           </a>
         </p>
       </div>

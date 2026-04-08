@@ -31,11 +31,36 @@ export async function getSalesCount(productId: string): Promise<number> {
 
 export async function markPaymentProcessed(paymentId: string): Promise<boolean> {
   if (!redis) return false;
-  // Returns 1 if key was set (first time), 0 if already exists
   const result = await redis.set(
     `payment:${paymentId}`,
     "processed",
-    { nx: true, ex: 86400 * 7 } // expire after 7 days
+    { nx: true, ex: 86400 * 7 }
   );
   return result === "OK";
+}
+
+export async function createDownloadToken(
+  productId: string,
+  downloadFile: string
+): Promise<string> {
+  const token = crypto.randomUUID();
+  if (redis) {
+    await redis.set(
+      `download:${token}`,
+      JSON.stringify({ productId, downloadFile }),
+      { ex: 86400 } // expira en 24 horas
+    );
+  }
+  return token;
+}
+
+export async function consumeDownloadToken(
+  token: string
+): Promise<{ productId: string; downloadFile: string } | null> {
+  if (!redis) return null;
+  const data = await redis.get<string>(`download:${token}`);
+  if (!data) return null;
+  // Borra el token para que no se pueda reusar
+  await redis.del(`download:${token}`);
+  return JSON.parse(data);
 }

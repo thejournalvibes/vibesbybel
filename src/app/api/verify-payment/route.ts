@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPayment } from "@/lib/mercadopago";
 import { getProductById } from "@/lib/products";
-import { markPaymentProcessed, incrementSales } from "@/lib/redis";
+import { markPaymentProcessed, incrementSales, createDownloadToken } from "@/lib/redis";
 
 export async function GET(req: NextRequest) {
   try {
@@ -11,20 +11,6 @@ export async function GET(req: NextRequest) {
 
     if (!paymentId) {
       return NextResponse.json({ error: "payment_id requerido" }, { status: 400 });
-    }
-
-    // Demo mode
-    if (paymentId.startsWith("DEMO_")) {
-      const demoProductId = paymentId.replace("DEMO_", "");
-      const product = getProductById(demoProductId);
-      if (product) {
-        return NextResponse.json({
-          approved: true,
-          productId: product.id,
-          productName: product.name,
-          downloadUrl: product.downloadFile,
-        });
-      }
     }
 
     if (!process.env.MP_ACCESS_TOKEN || process.env.MP_ACCESS_TOKEN.startsWith("your_")) {
@@ -49,12 +35,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Producto no encontrado" }, { status: 404 });
     }
 
-    // Track sales idempotently
+    let downloadToken: string | null = null;
+
     if (payment.status === "approved") {
+      // Track sales idempotently
       const isNew = await markPaymentProcessed(paymentId);
       if (isNew) {
         await incrementSales(resolvedProductId);
       }
+      // Generate secure one-time download token
+      downloadToken = await createDownloadToken(resolvedProductId, product.downloadFile);
     }
 
     return NextResponse.json({
@@ -62,7 +52,7 @@ export async function GET(req: NextRequest) {
       pending: payment.status === "pending",
       productId: product.id,
       productName: product.name,
-      downloadUrl: payment.status === "approved" ? product.downloadFile : null,
+      downloadToken,
     });
   } catch (error) {
     console.error("Verify payment error:", error);
