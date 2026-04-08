@@ -16,7 +16,7 @@ export const PRODUCTS: Product[] = [
     name: "Planner Financiero",
     description:
       "Toma el control de tus finanzas con estilo. Registra ingresos, gastos, metas de ahorro y más.",
-    price: 10,
+    price: 1,
     currency: "ARS",
     image: "/images/plannerfinanciero.png",
     downloadFile: "/downloads/plannerfinanciero.xlsx",
