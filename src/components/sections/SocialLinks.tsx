@@ -60,6 +60,27 @@ export default function SocialLinks() {
             </a>
           ))}
 
+          {/* Mercado Libre recomendados */}
+          <a
+            href="https://mercadolibre.com/sec/1Q2v9cg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+              link-card flex items-center gap-4 p-4 rounded-2xl shadow-paper
+              bg-yellow-400 text-charcoal -rotate-1
+              transition-transform hover:scale-105 active:scale-95
+            "
+          >
+            <span className="text-3xl">🛒</span>
+            <div className="flex-1">
+              <p className="font-serif font-bold text-base leading-tight">Mis recomendados</p>
+              <p className="text-sm opacity-70">Productos que uso y amo en Mercado Libre</p>
+            </div>
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+
           {/* Donar cafecito */}
           <a
             href="https://cafecito.app/thejournalvibes"
