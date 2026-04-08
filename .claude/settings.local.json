@@ -10,7 +10,8 @@
       "Read(//usr/local/bin/**)",
       "Read(//opt/homebrew/opt/**)",
       "Bash(chmod +x /Users/emanuelnolasco/Documents/vibesbybel/dev.sh)",
-      "Bash(ln -sf /opt/homebrew/bin/node /usr/local/bin/node)"
+      "Bash(ln -sf /opt/homebrew/bin/node /usr/local/bin/node)",
+      "Bash(ls /Users/emanuelnolasco/Documents/vibesbybel/public/images/favicon*)"
     ]
   }
 }
