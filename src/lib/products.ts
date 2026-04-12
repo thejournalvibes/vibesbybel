@@ -4,7 +4,7 @@ export interface Product {
   description: string;
   price: number;
   currency: string;
-  image: string;
+  images: string[];
   downloadFile: string;
   category: "digital" | "free";
   tag?: string;
@@ -12,29 +12,51 @@ export interface Product {
 
 export const PRODUCTS: Product[] = [
   {
-    id: "planner-financiero",
-    name: "Planner Financiero",
+    id: "plantilla-finanzas-azul",
+    name: "Planner Financiero Azul",
     description:
-      "Toma el control de tus finanzas con estilo. Registra ingresos, gastos, metas de ahorro y más.",
+      "Tomá el control de tus finanzas con estilo. Registrá ingresos, gastos y metas de ahorro. PDF listo para imprimir.",
     price: 1,
     currency: "ARS",
-    image: "/images/plannerfinanciero.png",
-    downloadFile: "/downloads/plannerfinanciero.xlsx",
+    images: [
+      "/downloads/plantilla-finanzas-azul/carrusel/1.png",
+      "/downloads/plantilla-finanzas-azul/carrusel/2.png",
+      "/downloads/plantilla-finanzas-azul/carrusel/3.png",
+      "/downloads/plantilla-finanzas-azul/carrusel/4.png",
+    ],
+    downloadFile: "/downloads/plantilla-finanzas-azul/descargable.pdf",
     category: "digital",
-    tag: "💖 Nuevo",
+    tag: "💙 Nuevo",
+  },
+  {
+    id: "plantilla-finanzas-rosa",
+    name: "Planner Financiero Rosa",
+    description:
+      "Igual de completo, en versión rosada. Llevá tus finanzas al día con una plantilla que te va a encantar usar.",
+    price: 1,
+    currency: "ARS",
+    images: [
+      "/downloads/plantilla-finanzas-rosa/carrusel/1.png",
+      "/downloads/plantilla-finanzas-rosa/carrusel/2.png",
+      "/downloads/plantilla-finanzas-rosa/carrusel/3.png",
+      "/downloads/plantilla-finanzas-rosa/carrusel/4.png",
+    ],
+    downloadFile: "/downloads/plantilla-finanzas-rosa/descargable.pdf",
+    category: "digital",
+    tag: "🩷 Nuevo",
   },
 ];
 
-export const FREE_DOWNLOADS: Product[] = [
+export const FREE_DOWNLOADS = [
   {
     id: "calendarios",
     name: "Calendarios",
     description: "Calendarios digitales para organizar tu mes con estilo.",
     price: 0,
     currency: "ARS",
-    image: "",
+    images: [],
     downloadFile: "https://drive.google.com/uc?export=download&id=1A0KaUlinKBW8pEXYuFSI6u7OsNnkns0L",
-    category: "free",
+    category: "free" as const,
   },
   {
     id: "cuaderno-digital",
@@ -42,9 +64,9 @@ export const FREE_DOWNLOADS: Product[] = [
     description: "Cuaderno digital listo para usar en tu tablet o app favorita.",
     price: 0,
     currency: "ARS",
-    image: "",
+    images: [],
     downloadFile: "https://drive.google.com/uc?export=download&id=1Ly-jYSvSBxnE6cltM9oYAW8yMNChLEXU",
-    category: "free",
+    category: "free" as const,
   },
   {
     id: "fondos-de-pantalla",
@@ -52,9 +74,9 @@ export const FREE_DOWNLOADS: Product[] = [
     description: "Pack de wallpapers aesthetic para tu celu y computadora.",
     price: 0,
     currency: "ARS",
-    image: "",
+    images: [],
     downloadFile: "https://drive.google.com/uc?export=download&id=13RhFCD-JG0baQfxT8Xd7yh292tWcxe4s",
-    category: "free",
+    category: "free" as const,
   },
   {
     id: "hojitas-isadora",
@@ -62,9 +84,9 @@ export const FREE_DOWNLOADS: Product[] = [
     description: "Hojas decorativas para imprimir o usar en digital.",
     price: 0,
     currency: "ARS",
-    image: "",
+    images: [],
     downloadFile: "https://drive.google.com/uc?export=download&id=1ryO7hg75Kpn6C20eBBORdpLmc8ewU6Di",
-    category: "free",
+    category: "free" as const,
   },
   {
     id: "organizador-de-estudio",
@@ -72,9 +94,9 @@ export const FREE_DOWNLOADS: Product[] = [
     description: "Plantillas para organizar materias, tareas y horarios.",
     price: 0,
     currency: "ARS",
-    image: "",
+    images: [],
     downloadFile: "https://drive.google.com/uc?export=download&id=1ZR-bnxQnnBTTllH7IY_9tNkK_hiVe7C6",
-    category: "free",
+    category: "free" as const,
   },
   {
     id: "organizador-trabajos-practicos",
@@ -82,9 +104,9 @@ export const FREE_DOWNLOADS: Product[] = [
     description: "Estructura y entrega tus TPs sin estrés.",
     price: 0,
     currency: "ARS",
-    image: "",
+    images: [],
     downloadFile: "https://drive.google.com/uc?export=download&id=1mZTfrq9WMUfM36_mR_jN0h2mFv7wrmXm",
-    category: "free",
+    category: "free" as const,
   },
   {
     id: "pestanas-para-agendas",
@@ -92,9 +114,9 @@ export const FREE_DOWNLOADS: Product[] = [
     description: "Pestañas imprimibles para indexar tu agenda o planner.",
     price: 0,
     currency: "ARS",
-    image: "",
+    images: [],
     downloadFile: "https://drive.google.com/uc?export=download&id=1Gd-_mBrN0AZ6zHk5r8IWY9tyiLB4n7_j",
-    category: "free",
+    category: "free" as const,
   },
   {
     id: "portadas",
@@ -102,12 +124,12 @@ export const FREE_DOWNLOADS: Product[] = [
     description: "Portadas aesthetic para tus cuadernos, carpetas o digital.",
     price: 0,
     currency: "ARS",
-    image: "",
+    images: [],
     downloadFile: "https://drive.google.com/uc?export=download&id=192ka-B0EMlDQ4x1JupVtCR46LixY9fAg",
-    category: "free",
+    category: "free" as const,
   },
 ];
 
 export function getProductById(id: string): Product | undefined {
-  return [...PRODUCTS, ...FREE_DOWNLOADS].find((p) => p.id === id);
+  return [...PRODUCTS, ...FREE_DOWNLOADS].find((p) => p.id === id) as Product | undefined;
 }
