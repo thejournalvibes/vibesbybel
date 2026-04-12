@@ -10,6 +10,7 @@ function Carousel({ images }: { images: string[] }) {
   const [hovered, setHovered] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
   const next = useCallback(() => {
     setCurrent((c) => (c + 1) % images.length);
@@ -62,6 +63,13 @@ function Carousel({ images }: { images: string[] }) {
         className="relative w-full aspect-square bg-paper-light rounded-sm overflow-hidden cursor-zoom-in"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+        onTouchEnd={(e) => {
+          if (touchStartX.current === null) return;
+          const delta = touchStartX.current - e.changedTouches[0].clientX;
+          if (Math.abs(delta) > 40) delta > 0 ? next() : prev();
+          touchStartX.current = null;
+        }}
       >
         {/* Images */}
         {images.map((src, i) => (
