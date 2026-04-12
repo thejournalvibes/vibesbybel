@@ -1,8 +1,9 @@
 import Hero from "@/components/sections/Hero";
 import SocialLinks from "@/components/sections/SocialLinks";
 import Shop from "@/components/sections/Shop";
-import AboutMe from "@/components/sections/AboutMe";
 import FreeDownloads from "@/components/sections/FreeDownloads";
+import NotionSection from "@/components/sections/NotionSection";
+import AboutMe from "@/components/sections/AboutMe";
 import Footer from "@/components/sections/Footer";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
       <SocialLinks />
       <Shop />
       <FreeDownloads />
+      <NotionSection />
       <AboutMe />
       <Footer />
     </main>
