@@ -45,7 +45,7 @@ function Carousel({ images }: { images: string[] }) {
             src={src}
             alt={`Imagen ${i + 1}`}
             fill
-            className="object-cover"
+            className={i === images.length - 1 ? "object-contain" : "object-cover"}
             priority={i === 0}
           />
         </div>
