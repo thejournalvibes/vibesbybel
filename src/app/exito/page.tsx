@@ -99,7 +99,7 @@ function ExitoContent() {
           {result?.productName || "Tu compra fue exitosa"}
         </p>
         <p className="text-sm text-muted mb-6">
-          Hacé clic para abrir tu plantilla en Google Sheets y guardar tu propia copia. 🌸
+          Tu plantilla está lista. Hacé clic para abrirla en Google Drive. 🌸
         </p>
 
         {result?.downloadToken && (
