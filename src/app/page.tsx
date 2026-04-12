@@ -12,8 +12,8 @@ export default function Home() {
       <Hero />
       <SocialLinks />
       <Shop />
-      <FreeDownloads />
       <NotionSection />
+      <FreeDownloads />
       <AboutMe />
       <Footer />
     </main>
