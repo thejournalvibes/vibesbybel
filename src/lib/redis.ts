@@ -47,7 +47,7 @@ export async function createDownloadToken(
   if (redis) {
     await redis.set(
       `download:${token}`,
-      JSON.stringify({ productId, downloadFile }),
+      { productId, downloadFile },
       { ex: 86400 } // expira en 24 horas
     );
   }
@@ -58,9 +58,9 @@ export async function consumeDownloadToken(
   token: string
 ): Promise<{ productId: string; downloadFile: string } | null> {
   if (!redis) return null;
-  const data = await redis.get<string>(`download:${token}`);
+  const data = await redis.get<{ productId: string; downloadFile: string }>(`download:${token}`);
   if (!data) return null;
   // Borra el token para que no se pueda reusar
   await redis.del(`download:${token}`);
-  return JSON.parse(data);
+  return data;
 }
