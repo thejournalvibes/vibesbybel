@@ -62,7 +62,7 @@ export default function SocialLinks() {
 
           {/* Mercado Libre recomendados */}
           <a
-            href="https://mercadolibre.com/sec/1Q2v9cg"
+            href="https://meli.la/2NKn61o"
             target="_blank"
             rel="noopener noreferrer"
             className="
