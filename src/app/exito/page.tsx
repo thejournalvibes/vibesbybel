@@ -99,19 +99,21 @@ function ExitoContent() {
           {result?.productName || "Tu compra fue exitosa"}
         </p>
         <p className="text-sm text-muted mb-6">
-          Ya puedes descargar tu producto. Guardá el archivo en un lugar seguro. 🌸
+          Hacé clic para abrir tu plantilla en Google Sheets y guardar tu propia copia. 🌸
         </p>
 
         {result?.downloadToken && (
           <a
             href={`/api/download?token=${result.downloadToken}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-primary flex items-center justify-center gap-2 mb-4 w-full"
           >
             <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
-            <span>Descargar ahora</span>
+            <span>Abrir mi plantilla</span>
           </a>
         )}
 
@@ -120,7 +122,7 @@ function ExitoContent() {
         </Link>
 
         <p className="text-xs text-muted mt-6">
-          ⚠️ El link de descarga expira en 24hs.{" "}
+          ⚠️ Este link expira en 24hs.{" "}
           <a href="https://instagram.com/thejournalvibes_" className="text-blush underline">
             ¿Problemas? Escribime en Instagram
           </a>

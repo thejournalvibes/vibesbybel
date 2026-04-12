@@ -16,12 +16,15 @@ export default function AboutMe() {
 
         {/* Photo in polaroid */}
         <div className="polaroid -rotate-2 mx-auto max-w-[200px] mb-6">
-          <div className="relative w-full aspect-square bg-blush/30 rounded-sm overflow-hidden">
+          <div className="relative w-full aspect-square rounded-sm overflow-hidden" style={{ backgroundColor: "#EDB8BE" }}>
             <Image
               src="/images/bel.jpg"
               alt="Bel - Journal Vibes"
               fill
               className="object-cover"
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwADhQGAWjR9awAAAABJRU5ErkJggg=="
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = "none";

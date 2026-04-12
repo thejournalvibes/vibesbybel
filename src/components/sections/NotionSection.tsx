@@ -23,12 +23,15 @@ export default function NotionSection() {
 
         {/* Image in polaroid */}
         <div className="polaroid -rotate-1 mb-6">
-          <div className="relative w-full aspect-[3/4]">
+          <div className="relative w-full aspect-[3/4]" style={{ backgroundColor: "#F5F0E8" }}>
             <Image
               src="/images/notion-mainscreen.png"
               alt="Plantillas de Notion — organizá tu vida"
               fill
               className="object-cover"
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwADhQGAWjR9awAAAABJRU5ErkJggg=="
             />
           </div>
           <p className="text-center font-script text-charcoal text-sm pt-2 pb-1">

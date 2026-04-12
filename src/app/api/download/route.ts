@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { consumeDownloadToken } from "@/lib/redis";
-import { getProductById } from "@/lib/products";
 import path from "path";
 import fs from "fs";
 
@@ -24,12 +23,12 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const product = getProductById(tokenData.productId);
-  if (!product) {
-    return NextResponse.json({ error: "Producto no encontrado" }, { status: 404 });
+  // External URL (e.g. Google Sheets /copy) — redirect directly
+  if (tokenData.downloadFile.startsWith("http")) {
+    return NextResponse.redirect(tokenData.downloadFile, { status: 302 });
   }
 
-  // Servir el archivo desde /public/downloads/
+  // Local file — serve from /public/
   const filePath = path.join(process.cwd(), "public", tokenData.downloadFile);
 
   if (!fs.existsSync(filePath)) {
