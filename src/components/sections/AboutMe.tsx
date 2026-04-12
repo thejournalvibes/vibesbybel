@@ -59,7 +59,7 @@ export default function AboutMe() {
 
           {/* Small sticker details */}
           <div className="flex gap-3 mt-5 flex-wrap">
-            {["📝 Journaling", "🗓️ Planning", "🦋 Crecimiento", "☕ Cafecito"].map(
+            {["📝 Journaling", "🗓️ Planning", "🦋 Crecimiento"].map(
               (tag) => (
                 <span
                   key={tag}
