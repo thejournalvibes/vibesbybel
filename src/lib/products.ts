@@ -3,6 +3,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  originalPrice?: number;
   currency: string;
   images: string[];
   downloadFile: string;
@@ -16,7 +17,8 @@ export const PRODUCTS: Product[] = [
     name: "Planner Financiero Azul",
     description:
       "Tomá el control de tus finanzas con estilo. Registrá ingresos, gastos y metas de ahorro. PDF listo para imprimir.",
-    price: 15000,
+    price: 7500,
+    originalPrice: 15000,
     currency: "ARS",
     images: [
       "/downloads/plantilla-finanzas-azul/carrusel/1.png",
@@ -33,7 +35,8 @@ export const PRODUCTS: Product[] = [
     name: "Planner Financiero Rosa",
     description:
       "Igual de completo, en versión rosada. Llevá tus finanzas al día con una plantilla que te va a encantar usar.",
-    price: 15000,
+    price: 7500,
+    originalPrice: 15000,
     currency: "ARS",
     images: [
       "/downloads/plantilla-finanzas-rosa/carrusel/1.png",

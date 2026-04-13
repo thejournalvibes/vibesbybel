@@ -247,11 +247,16 @@ function ProductCard({ product, index }: { product: (typeof PRODUCTS)[0]; index:
 
   return (
     <div className={`polaroid ${rotations[index % 2]} group w-full`}>
-      {product.tag && (
+      {/* Promo badge — replaces the tag sticker when there's a discount */}
+      {product.originalPrice ? (
+        <div className="sticker absolute -top-3 -right-3 bg-blush text-white text-xs font-black px-2.5 py-1.5 rounded-full shadow-md z-10 rotate-12 leading-tight text-center">
+          🎉 -50%
+        </div>
+      ) : product.tag ? (
         <div className="sticker absolute -top-3 -right-3 bg-blush text-white text-xs font-bold px-2 py-1 rounded-full shadow-md z-10 rotate-12">
           {product.tag}
         </div>
-      )}
+      ) : null}
 
       <Carousel images={product.images} />
 
@@ -262,15 +267,32 @@ function ProductCard({ product, index }: { product: (typeof PRODUCTS)[0]; index:
         <p className="text-xs text-muted leading-snug mb-3">
           {product.description}
         </p>
-        <div className="flex items-center justify-between">
-          <span className="font-serif font-black text-lg text-blush">
-            ${product.price}
-            <span className="text-xs font-normal text-muted ml-1">{product.currency}</span>
-          </span>
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            {product.originalPrice && (
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-xs text-muted line-through">
+                  ${product.originalPrice.toLocaleString("es-AR")}
+                </span>
+                <span className="text-xs font-bold text-white bg-blush px-1.5 py-0.5 rounded-full leading-tight">
+                  -50%
+                </span>
+              </div>
+            )}
+            <div className="flex items-baseline gap-1">
+              <span className="font-serif font-black text-lg text-blush">
+                ${product.price.toLocaleString("es-AR")}
+              </span>
+              <span className="text-xs font-normal text-muted">{product.currency}</span>
+            </div>
+            {product.originalPrice && (
+              <p className="text-xs text-muted mt-0.5">✨ Promo lanzamiento</p>
+            )}
+          </div>
           <button
             onClick={handleBuy}
             disabled={loading}
-            className="btn-primary text-xs px-3 py-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="btn-primary text-xs px-3 py-1.5 disabled:opacity-60 disabled:cursor-not-allowed flex-shrink-0"
           >
             {loading ? "..." : "Comprar"}
           </button>
