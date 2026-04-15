@@ -42,7 +42,12 @@ export async function GET(req: NextRequest) {
       const isNew = await markPaymentProcessed(paymentId);
       if (isNew) {
         const amount = (payment.transaction_amount as number) ?? product.price;
-        await incrementSales(resolvedProductId, amount);
+        await incrementSales(resolvedProductId, amount, {
+          paymentId,
+          productId: resolvedProductId,
+          productName: product.name,
+          amount,
+        });
       }
       // Generate secure one-time download token
       downloadToken = await createDownloadToken(resolvedProductId, product.downloadFile);

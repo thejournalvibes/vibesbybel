@@ -1,6 +1,5 @@
 import { Redis } from "@upstash/redis";
 
-// In dev without Redis configured, use a simple in-memory fallback
 let redis: Redis | null = null;
 
 try {
@@ -15,13 +14,32 @@ try {
     });
   }
 } catch {
-  // Redis not configured, sales tracking will be skipped
+  // Redis not configured
 }
 
-export async function incrementSales(productId: string, amount: number): Promise<void> {
+export interface SaleEntry {
+  paymentId: string;
+  productId: string;
+  productName: string;
+  amount: number;
+  timestamp: number; // Unix ms
+}
+
+// ─── Counters (totals) ───────────────────────────────────────────────────────
+
+export async function incrementSales(
+  productId: string,
+  amount: number,
+  entry: Omit<SaleEntry, "timestamp">
+): Promise<void> {
   if (!redis) return;
-  await redis.incr(`sales:${productId}`);
-  await redis.incrbyfloat(`revenue:${productId}`, amount);
+  const ts = Date.now();
+  await Promise.all([
+    redis.incr(`sales:${productId}`),
+    redis.incrbyfloat(`revenue:${productId}`, amount),
+    // Store in sorted set with timestamp as score for history queries
+    redis.zadd("sales_history", { score: ts, member: JSON.stringify({ ...entry, timestamp: ts }) }),
+  ]);
 }
 
 export async function getSalesCount(productId: string): Promise<number> {
@@ -36,11 +54,53 @@ export async function getRevenue(productId: string): Promise<number> {
   return rev ?? 0;
 }
 
-export async function resetSalesData(productId: string, sales: number, revenue: number): Promise<void> {
+export async function resetSalesData(
+  productId: string,
+  sales: number,
+  revenue: number
+): Promise<void> {
   if (!redis) return;
   await redis.set(`sales:${productId}`, sales);
   await redis.set(`revenue:${productId}`, revenue);
 }
+
+// ─── Sales history ───────────────────────────────────────────────────────────
+
+export async function getSalesHistory(
+  fromTs = 0,
+  toTs = Date.now()
+): Promise<SaleEntry[]> {
+  if (!redis) return [];
+  const raw = await redis.zrange<string[]>("sales_history", fromTs, toTs, {
+    byScore: true,
+  });
+  if (!raw?.length) return [];
+  return raw.map((r) => {
+    try {
+      return typeof r === "string" ? JSON.parse(r) : r;
+    } catch {
+      return null;
+    }
+  }).filter(Boolean) as SaleEntry[];
+}
+
+export async function clearAllSalesHistory(): Promise<void> {
+  if (!redis) return;
+  await redis.del("sales_history");
+}
+
+// Manually inject a sale entry (for seeding real historical data)
+export async function recordManualSale(entry: SaleEntry): Promise<void> {
+  if (!redis) return;
+  await redis.zadd("sales_history", {
+    score: entry.timestamp,
+    member: JSON.stringify(entry),
+  });
+  await redis.set(`sales:${entry.productId}`, 1);
+  await redis.set(`revenue:${entry.productId}`, entry.amount);
+}
+
+// ─── Payments & tokens ───────────────────────────────────────────────────────
 
 export async function markPaymentProcessed(paymentId: string): Promise<boolean> {
   if (!redis) return false;
@@ -61,7 +121,7 @@ export async function createDownloadToken(
     await redis.set(
       `download:${token}`,
       { productId, downloadFile },
-      { ex: 86400 } // expira en 24 horas
+      { ex: 86400 }
     );
   }
   return token;
@@ -71,9 +131,10 @@ export async function consumeDownloadToken(
   token: string
 ): Promise<{ productId: string; downloadFile: string } | null> {
   if (!redis) return null;
-  const data = await redis.get<{ productId: string; downloadFile: string }>(`download:${token}`);
+  const data = await redis.get<{ productId: string; downloadFile: string }>(
+    `download:${token}`
+  );
   if (!data) return null;
-  // Borra el token para que no se pueda reusar
   await redis.del(`download:${token}`);
   return data;
 }

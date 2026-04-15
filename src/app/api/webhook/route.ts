@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPayment } from "@/lib/mercadopago";
 import { incrementSales, markPaymentProcessed } from "@/lib/redis";
+import { getProductById } from "@/lib/products";
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,7 +26,13 @@ export async function POST(req: NextRequest) {
         const isNew = await markPaymentProcessed(paymentId);
         if (isNew) {
           const amount = (payment.transaction_amount as number) ?? 0;
-          await incrementSales(productId, amount);
+          const product = getProductById(productId);
+          await incrementSales(productId, amount, {
+            paymentId,
+            productId,
+            productName: product?.name ?? productId,
+            amount,
+          });
         }
       }
     }
