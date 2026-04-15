@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
         // Idempotent: only count once per payment
         const isNew = await markPaymentProcessed(paymentId);
         if (isNew) {
-          await incrementSales(productId);
+          const amount = (payment.transaction_amount as number) ?? 0;
+          await incrementSales(productId, amount);
         }
       }
     }

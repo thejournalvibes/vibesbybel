@@ -18,15 +18,28 @@ try {
   // Redis not configured, sales tracking will be skipped
 }
 
-export async function incrementSales(productId: string): Promise<void> {
+export async function incrementSales(productId: string, amount: number): Promise<void> {
   if (!redis) return;
   await redis.incr(`sales:${productId}`);
+  await redis.incrbyfloat(`revenue:${productId}`, amount);
 }
 
 export async function getSalesCount(productId: string): Promise<number> {
   if (!redis) return 0;
   const count = await redis.get<number>(`sales:${productId}`);
   return count ?? 0;
+}
+
+export async function getRevenue(productId: string): Promise<number> {
+  if (!redis) return 0;
+  const rev = await redis.get<number>(`revenue:${productId}`);
+  return rev ?? 0;
+}
+
+export async function resetSalesData(productId: string, sales: number, revenue: number): Promise<void> {
+  if (!redis) return;
+  await redis.set(`sales:${productId}`, sales);
+  await redis.set(`revenue:${productId}`, revenue);
 }
 
 export async function markPaymentProcessed(paymentId: string): Promise<boolean> {

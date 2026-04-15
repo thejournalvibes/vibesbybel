@@ -41,7 +41,8 @@ export async function GET(req: NextRequest) {
       // Track sales idempotently
       const isNew = await markPaymentProcessed(paymentId);
       if (isNew) {
-        await incrementSales(resolvedProductId);
+        const amount = (payment.transaction_amount as number) ?? product.price;
+        await incrementSales(resolvedProductId, amount);
       }
       // Generate secure one-time download token
       downloadToken = await createDownloadToken(resolvedProductId, product.downloadFile);
