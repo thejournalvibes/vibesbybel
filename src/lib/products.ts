@@ -83,7 +83,7 @@ export const FREE_DOWNLOADS = [
   },
   {
     id: "hojitas-isadora",
-    name: "Hojitas Isadora",
+    name: "Agenditas",
     description: "Hojas decorativas para imprimir o usar en digital.",
     price: 0,
     currency: "ARS",
@@ -113,7 +113,7 @@ export const FREE_DOWNLOADS = [
   },
   {
     id: "pestanas-para-agendas",
-    name: "Pestañas para Agendas",
+    name: "Recursos para iPad",
     description: "Pestañas imprimibles para indexar tu agenda o planner.",
     price: 0,
     currency: "ARS",
