@@ -119,8 +119,8 @@ function ExitoContent() {
               ⚠️ Guardá este link antes de cerrar
             </p>
             <p className="text-amber-700 text-xs leading-snug mb-3">
-              El link expira en <strong>24 horas</strong> y solo funciona una vez.
-              Si cerrás esta página sin descargarlo, perdés el acceso.
+              Copiá el link y guardalo en tus notas o mandátelo por WhatsApp.
+              Si cerrás esta página podrías perder el acceso.
             </p>
             <button
               onClick={handleCopy}
