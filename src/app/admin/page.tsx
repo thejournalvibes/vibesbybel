@@ -356,7 +356,7 @@ export default function AdminPage() {
                     <span className="text-xs bg-blush/15 text-blush px-2 py-0.5 rounded-full">editado</span>
                   )}
                 </div>
-                <p className="text-xs text-muted mb-2 truncate" title={item.currentLink}>
+                <p className="text-xs text-muted mb-2 break-all">
                   {item.currentLink}
                 </p>
                 <div className="flex gap-2">
