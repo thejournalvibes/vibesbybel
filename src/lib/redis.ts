@@ -100,6 +100,21 @@ export async function recordManualSale(entry: SaleEntry): Promise<void> {
   await redis.set(`revenue:${entry.productId}`, entry.amount);
 }
 
+// ─── Free download link overrides ────────────────────────────────────────────
+
+export async function setFreeLink(productId: string, url: string): Promise<void> {
+  if (!redis) return;
+  await redis.set(`freelink:${productId}`, url);
+}
+
+export async function getAllFreeLinks(ids: string[]): Promise<Record<string, string>> {
+  if (!redis) return {};
+  const values = await Promise.all(ids.map((id) => redis!.get<string>(`freelink:${id}`)));
+  const result: Record<string, string> = {};
+  ids.forEach((id, i) => { if (values[i]) result[id] = values[i]!; });
+  return result;
+}
+
 // ─── Payments & tokens ───────────────────────────────────────────────────────
 
 export async function markPaymentProcessed(paymentId: string): Promise<boolean> {

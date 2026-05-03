@@ -20,11 +20,19 @@ interface SaleEntry {
   timestamp: number;
 }
 
+interface FreeLink {
+  id: string;
+  name: string;
+  currentLink: string;
+  isOverridden: boolean;
+}
+
 interface Stats {
   stats: ProductStat[];
   totalSales: number;
   totalRevenue: number;
   history: SaleEntry[];
+  freeLinks: FreeLink[];
 }
 
 type Period = "week" | "month" | "all";
@@ -71,7 +79,9 @@ export default function AdminPage() {
   const [data, setData] = useState<Stats | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState<"overview" | "history">("overview");
+  const [tab, setTab] = useState<"overview" | "history" | "links">("overview");
+  const [editLinks, setEditLinks] = useState<Record<string, string>>({});
+  const [savingLink, setSavingLink] = useState<string | null>(null);
   const [period, setPeriod] = useState<Period>("week");
   const [msg, setMsg] = useState("");
   const [seeding, setSeeding] = useState(false);
@@ -132,6 +142,16 @@ export default function AdminPage() {
     flash("✅ Venta registrada");
   };
 
+  const handleSaveLink = async (id: string) => {
+    const url = editLinks[id]?.trim();
+    if (!url) return;
+    setSavingLink(id);
+    await api({ action: "setLink", productId: id, url });
+    await refresh();
+    setSavingLink(null);
+    flash("✅ Link actualizado");
+  };
+
   const flash = (m: string) => { setMsg(m); setTimeout(() => setMsg(""), 3000); };
 
   // Filtered history
@@ -176,10 +196,10 @@ export default function AdminPage() {
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
-          {(["overview", "history"] as const).map(t => (
+          {(["overview", "history", "links"] as const).map(t => (
             <button key={t} onClick={() => setTab(t)}
-              className={`flex-1 py-2 rounded-xl text-sm font-serif font-bold transition-colors ${tab === t ? "bg-blush text-white" : "bg-paper text-muted shadow-paper"}`}>
-              {t === "overview" ? "📊 Resumen" : "📅 Historial"}
+              className={`flex-1 py-2 rounded-xl text-xs font-serif font-bold transition-colors ${tab === t ? "bg-blush text-white" : "bg-paper text-muted shadow-paper"}`}>
+              {t === "overview" ? "📊 Resumen" : t === "history" ? "📅 Historial" : "🔗 Links"}
             </button>
           ))}
         </div>
@@ -320,6 +340,44 @@ export default function AdminPage() {
               </div>
             )}
           </>
+        )}
+
+        {/* ── LINKS ── */}
+        {tab === "links" && (
+          <div className="flex flex-col gap-3 mb-5">
+            <p className="text-xs text-muted mb-1">
+              Subí el archivo a Google Drive → compartir → "Cualquier persona con el enlace" → pegá el link acá 👇
+            </p>
+            {data.freeLinks.map((item) => (
+              <div key={item.id} className="paper-card p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <p className="font-serif font-bold text-charcoal text-sm flex-1">{item.name}</p>
+                  {item.isOverridden && (
+                    <span className="text-xs bg-blush/15 text-blush px-2 py-0.5 rounded-full">editado</span>
+                  )}
+                </div>
+                <p className="text-xs text-muted mb-2 truncate" title={item.currentLink}>
+                  {item.currentLink}
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    placeholder="Pegá el nuevo link de Drive..."
+                    value={editLinks[item.id] ?? ""}
+                    onChange={(e) => setEditLinks(prev => ({ ...prev, [item.id]: e.target.value }))}
+                    className="flex-1 border border-blush/30 rounded-lg px-3 py-2 text-xs text-charcoal bg-paper focus:outline-none focus:border-blush"
+                  />
+                  <button
+                    onClick={() => handleSaveLink(item.id)}
+                    disabled={!editLinks[item.id]?.trim() || savingLink === item.id}
+                    className="btn-primary text-xs px-3 py-2 disabled:opacity-40"
+                  >
+                    {savingLink === item.id ? "..." : "Guardar"}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
         <button onClick={() => { setData(null); setPassword(""); }} className="btn-secondary w-full text-center mt-2">

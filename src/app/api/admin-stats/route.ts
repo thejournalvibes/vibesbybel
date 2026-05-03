@@ -6,8 +6,10 @@ import {
   getSalesHistory,
   clearAllSalesHistory,
   recordManualSale,
+  setFreeLink,
+  getAllFreeLinks,
 } from "@/lib/redis";
-import { PRODUCTS } from "@/lib/products";
+import { PRODUCTS, FREE_DOWNLOADS } from "@/lib/products";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -24,6 +26,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  // Update a free download link
+  if (action === "setLink") {
+    const { productId, url } = body;
+    await setFreeLink(productId, url);
+    return NextResponse.json({ ok: true });
+  }
+
   // Clear entire sales history sorted set
   if (action === "clearHistory") {
     await clearAllSalesHistory();
@@ -37,8 +46,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  // Return stats + history
-  const [stats, history] = await Promise.all([
+  // Return stats + history + free links
+  const freeIds = FREE_DOWNLOADS.map((d) => d.id);
+  const [stats, history, linkOverrides] = await Promise.all([
     Promise.all(
       PRODUCTS.map(async (product) => {
         const sales = await getSalesCount(product.id);
@@ -47,10 +57,19 @@ export async function POST(req: NextRequest) {
       })
     ),
     getSalesHistory(),
+    getAllFreeLinks(freeIds),
   ]);
+
+  // Build free downloads list with current effective link
+  const freeLinks = FREE_DOWNLOADS.map((d) => ({
+    id: d.id,
+    name: d.name,
+    currentLink: linkOverrides[d.id] ?? d.downloadFile,
+    isOverridden: !!linkOverrides[d.id],
+  }));
 
   const totalSales = stats.reduce((acc, p) => acc + p.sales, 0);
   const totalRevenue = stats.reduce((acc, p) => acc + p.revenue, 0);
 
-  return NextResponse.json({ stats, totalSales, totalRevenue, history });
+  return NextResponse.json({ stats, totalSales, totalRevenue, history, freeLinks });
 }

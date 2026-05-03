@@ -1,17 +1,23 @@
 import { FREE_DOWNLOADS } from "@/lib/products";
+import { getAllFreeLinks } from "@/lib/redis";
 
 const ICONS: Record<string, string> = {
   "calendarios": "🗓️",
   "cuaderno-digital": "📒",
   "fondos-de-pantalla": "🖼️",
   "hojitas-isadora": "🌸",
+  "agenditas": "📔",
   "organizador-de-estudio": "📚",
   "organizador-trabajos-practicos": "📝",
   "pestanas-para-agendas": "🔖",
+  "recursos-para-ipad": "📱",
   "portadas": "✨",
 };
 
-export default function FreeDownloads() {
+export default async function FreeDownloads() {
+  const ids = FREE_DOWNLOADS.map((d) => d.id);
+  const overrides = await getAllFreeLinks(ids);
+
   return (
     <section id="gratis" className="py-10 px-4 bg-cream relative overflow-hidden">
       <span className="absolute top-4 left-3 text-2xl rotate-12 opacity-50">🎁</span>
@@ -34,11 +40,13 @@ export default function FreeDownloads() {
           {FREE_DOWNLOADS.map((item, i) => {
             const rotations = ["rotate-1", "-rotate-1"];
             const colors = ["bg-blush/10", "bg-sky/10"];
+            // Use Redis override if available, otherwise fall back to hardcoded
+            const href = overrides[item.id] ?? item.downloadFile;
 
             return (
               <a
                 key={item.id}
-                href={item.downloadFile}
+                href={href}
                 download
                 className={`
                   paper-card ${rotations[i % 2]} ${colors[i % 2]}
