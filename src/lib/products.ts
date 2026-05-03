@@ -58,7 +58,7 @@ export const FREE_DOWNLOADS = [
     price: 0,
     currency: "ARS",
     images: [],
-    downloadFile: "https://drive.google.com/uc?export=download&id=1A0KaUlinKBW8pEXYuFSI6u7OsNnkns0L",
+    downloadFile: "https://drive.google.com/file/d/1M65QUvxKcbIKJi6-A7NaSqouITwA9cHv/view?usp=sharing",
     category: "free" as const,
   },
   {
