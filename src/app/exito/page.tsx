@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -16,6 +16,19 @@ function ExitoContent() {
   const searchParams = useSearchParams();
   const [result, setResult] = useState<PaymentResult | null>(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  const downloadUrl = result?.downloadToken
+    ? `${typeof window !== "undefined" ? window.location.origin : ""}/api/download?token=${result.downloadToken}`
+    : null;
+
+  const handleCopy = useCallback(() => {
+    if (!downloadUrl) return;
+    navigator.clipboard.writeText(downloadUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    });
+  }, [downloadUrl]);
 
   useEffect(() => {
     const paymentId = searchParams.get("payment_id");
@@ -98,7 +111,46 @@ function ExitoContent() {
         <p className="font-serif text-xl font-bold text-charcoal mb-3">
           {result?.productName || "Tu compra fue exitosa"}
         </p>
-        <p className="text-sm text-muted mb-6">
+
+        {/* ── Warning banner ── */}
+        {result?.downloadToken && (
+          <div className="rounded-2xl border-2 border-amber-400 bg-amber-50 px-4 py-3 mb-5 text-left">
+            <p className="font-bold text-amber-800 text-sm mb-1">
+              ⚠️ Guardá este link antes de cerrar
+            </p>
+            <p className="text-amber-700 text-xs leading-snug mb-3">
+              El link expira en <strong>24 horas</strong> y solo funciona una vez.
+              Si cerrás esta página sin descargarlo, perdés el acceso.
+            </p>
+            <button
+              onClick={handleCopy}
+              className={`w-full rounded-xl py-2 px-3 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                copied
+                  ? "bg-green-500 text-white"
+                  : "bg-amber-400 hover:bg-amber-500 text-amber-900"
+              }`}
+            >
+              {copied ? (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                  ¡Copiado!
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Copiar link
+                </>
+              )}
+            </button>
+          </div>
+        )}
+
+        <p className="text-sm text-muted mb-4">
           Tu plantilla está lista. Hacé clic para abrirla en Google Drive. 🌸
         </p>
 
@@ -121,10 +173,10 @@ function ExitoContent() {
           Volver a la tienda
         </Link>
 
-        <p className="text-xs text-muted mt-6">
-          ⚠️ Este link expira en 24hs.{" "}
+        <p className="text-xs text-muted mt-5">
+          ¿Problemas?{" "}
           <a href="https://instagram.com/thejournalvibes_" className="text-blush underline">
-            ¿Problemas? Escribime en Instagram
+            Escribime en Instagram
           </a>
         </p>
       </div>
